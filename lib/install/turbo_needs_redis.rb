@@ -1,13 +1,14 @@
 if (cable_config_path = Rails.root.join("config/cable.yml")).exist?
   say "Enable redis in bundle"
 
-  gemfile_content = File.read(Rails.root.join("Gemfile"))
+  gemfile_path = ENV["BUNDLE_GEMFILE"] || Rails.root.join("Gemfile")
+  gemfile_content = File.read(gemfile_path)
   pattern = /gem ['"]redis['"]/
 
   if gemfile_content.match?(pattern)
-    uncomment_lines "Gemfile", pattern
+    uncomment_lines gemfile_path, pattern
   else
-    append_file "Gemfile", "\n# Use Redis for Action Cable"
+    append_file gemfile_path, "\n# Use Redis for Action Cable"
     gem 'redis', '~> 4.0'
   end
 
